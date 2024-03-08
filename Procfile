@@ -1,1 +1,1 @@
-web: gunicorn parlaybuilder.wsgi
+web: gunicorn server.wsgi
