@@ -132,5 +132,6 @@ def GetNextOpponent(first_name, last_name, team):
         cols = row.find_all(['td', 'th'])
         cols = [ele.text.strip() for ele in cols]
         nu_row.append([cols[2],cols[5],cols[6],cols[7],cols[8],cols[9],cols[10],cols[11],cols[13], cols[14], cols[16], cols[17]])
+    nu_row.reverse()
     df2 = pd.DataFrame(nu_row, columns=['Date', 'Opp', 'MP', 'PTS', 'REB', 'AST','STL', 'BLK', 'FG', 'FGA', '3P', '3PA'])
     return {"last5opp": df2, "next_opponent": [team, team_name]}
