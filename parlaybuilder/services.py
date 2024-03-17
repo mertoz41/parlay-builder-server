@@ -42,9 +42,41 @@ def GetStats(first_name, last_name):
         response = {"error": season_stats["error"]}
     
     return response
+
+def GetMvpList():
+    rows = GetTable('https://www.basketball-reference.com/friv/mvp.html', "players")
+    top5 = rows[:5]
+    new_rows = []
+    for row in top5:
+        cols = row.find_all(['td', 'th'])
+        cols = [ele.text.strip() for ele in cols]
+        new_rows.append([cols[0], cols[1], cols[2], cols[3], cols[4], cols[9], cols[10], cols[12], cols[13], cols[24], cols[25], cols[26], cols[27], cols[30]])
+    df1 = pd.DataFrame(new_rows, columns=['Rank', 'Player', 'Team', 'W', 'L', 'FG', 'FGA', '3P', '3PA', 'REB', 'AST', 'STL', 'BLK', 'PTS'])
+    return df1
+
+
+def GetTable(url, table_id):
+    response = requests.get(url)
+    soup = BeautifulSoup(response.content, 'html.parser')
+    table = soup.find('table', id=table_id)
+    rows = table.find_all("tr")
+    rows.pop(0)
+    return rows
+
+
+def GetTodaysGames():
+    rows = GetTable('https://www.foxsports.com/nba/schedule', "table-0")
+    nu_row = []
+    for row in rows:
+        cols = row.find_all(['td', 'th'])
+        imgs = [ele.img for ele in cols]
+        cols = [ele.text.strip() for ele in cols]
+        nu_row.append([cols[0], imgs[0]['src'], cols[2], imgs[2]['src']])
+    return nu_row
     
     
 def GetSeasonStats(first_name, last_name):
+    # 02 for jaylen brown, anthony davis
     response = requests.get(f'https://www.basketball-reference.com/players/{last_name[0]}/{last_name[:5]}{first_name[:2]}01.html')
     soup = BeautifulSoup(response.content, 'html.parser')
     all_stats = soup.find(class_="p1")
@@ -76,9 +108,18 @@ def GetSeasonStats(first_name, last_name):
         team = next[0].get_text()
         return {"img": pic[0]["src"], "season_stats": season_stats, "last5": df1, "next_team_abr": team}
 
+def GetTeamPlayers(team):
+    rows = GetTable(f'https://www.basketball-reference.com/teams/{team}/2024.html', "per_game")
+    top8 = rows[:9]
+    new_rows = []
+    for row in top8:
+        cols = row.find_all(['td', 'th'])
+        cols = [ele.text.strip() for ele in cols]
+        new_rows.append([cols[1], cols[6], cols[7], cols[9], cols[10], cols[21], cols[22], cols[23], cols[24], cols[27]])
+    df1 = pd.DataFrame(new_rows, columns=['Player','FG', 'FGA', '3P', '3PA', 'REB', 'AST', 'STL', 'BLK', 'PTS'])
+    return {"roster": df1, "team_name": team_abbreviations[team]}
 
 def GetNextOpponent(first_name, last_name, team):
-    
     team_name = team_abbreviations[team]
     stat_response = requests.get(f'https://www.statmuse.com/nba/ask?q={first_name}+{last_name}+last+5+games+vs+{team_name}')
     soupy = BeautifulSoup(stat_response.content, 'html.parser')
