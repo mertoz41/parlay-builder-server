@@ -27,7 +27,7 @@ team_abbreviations = {
         "PHI": "sixers",
         "PHO": "suns",
         "POR": "blazers",
-        "SA": "spurs",
+        "SAS": "spurs",
         "SAC": "kings",
         "TOR": "raptors",
         "UTA": "jazz",
@@ -77,7 +77,16 @@ def GetTodaysGames():
     
 def GetSeasonStats(first_name, last_name):
     # 02 for jaylen brown, anthony davis
-    response = requests.get(f'https://www.basketball-reference.com/players/{last_name[0]}/{last_name[:5]}{first_name[:2]}01.html')
+    index = ""
+    full_name = first_name + " " + last_name
+    if full_name == "jaylen brown":
+        index = "2"
+    elif full_name == "anthony davis":
+        index = "2"
+    else:
+        index = "1"
+        
+    response = requests.get(f'https://www.basketball-reference.com/players/{last_name[0]}/{last_name[:5]}{first_name[:2]}0{index}.html')
     soup = BeautifulSoup(response.content, 'html.parser')
     all_stats = soup.find(class_="p1")
     if all_stats == None:
@@ -109,7 +118,20 @@ def GetSeasonStats(first_name, last_name):
         return {"img": pic[0]["src"], "season_stats": season_stats, "last5": df1, "next_team_abr": team}
 
 def GetTeamPlayers(team):
-    rows = GetTable(f'https://www.basketball-reference.com/teams/{team}/2024.html', "per_game")
+    # phx to pho
+    team_name = ''
+    if team == "PHX":
+        team_name = "PHO"
+    elif team == "BKN":
+        team_name = "BRK"
+    elif team == "CHA":
+        team_name = "CHO"
+    else:
+        team_name = team
+
+    # bkn to brk
+    # cha to CHO
+    rows = GetTable(f'https://www.basketball-reference.com/teams/{team_name}/2024.html', "per_game")
     top8 = rows[:9]
     new_rows = []
     for row in top8:
@@ -117,7 +139,7 @@ def GetTeamPlayers(team):
         cols = [ele.text.strip() for ele in cols]
         new_rows.append([cols[1], cols[6], cols[7], cols[9], cols[10], cols[21], cols[22], cols[23], cols[24], cols[27]])
     df1 = pd.DataFrame(new_rows, columns=['Player','FG', 'FGA', '3P', '3PA', 'REB', 'AST', 'STL', 'BLK', 'PTS'])
-    return {"roster": df1, "team_name": team_abbreviations[team]}
+    return {"roster": df1, "team_name": team_abbreviations[team_name]}
 
 def GetNextOpponent(first_name, last_name, team):
     team_name = team_abbreviations[team]
