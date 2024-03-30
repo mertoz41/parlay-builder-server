@@ -20,7 +20,7 @@ team_abbreviations = {
         "MIA": "heat",
         "MIL": "bucks",
         "MIN": "timberwolves",
-        "NO": "pelicans",
+        "NOP": "pelicans",
         "NY": "knicks",
         "ORL": "magic",
         "OKC": "thunder",
