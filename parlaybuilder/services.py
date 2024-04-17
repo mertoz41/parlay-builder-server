@@ -35,13 +35,14 @@ team_abbreviations = {
 }
 def GetStats(first_name, last_name):
     season_stats = GetSeasonStats(first_name, last_name)
-    if  "season_stats" in season_stats:
-        opponent_stats = GetNextOpponent(first_name, last_name, season_stats["next_team_abr"])
-        response = {**season_stats, **opponent_stats}
-    else: 
-        response = {"error": season_stats["error"]}
+    # print(season_stats)
+    # if  "season_stats" in season_stats:
+    #     opponent_stats = GetNextOpponent(first_name, last_name, season_stats["next_team_abr"])
+    #     response = {**season_stats, **opponent_stats}
+    # else: 
+    #     response = {"error": season_stats["error"]}
     
-    return response
+    return season_stats
 
 def GetMvpList():
     rows = GetTable('https://www.basketball-reference.com/friv/mvp.html', "players")
@@ -112,10 +113,12 @@ def GetSeasonStats(first_name, last_name):
             nu_row.append([cols[0],cols[3],cols[4],cols[6],cols[7],cols[8],cols[10],cols[11],cols[18], cols[19], cols[20], cols[21], cols[24]])
         df1 = pd.DataFrame(nu_row, columns=['Date', 'Opp', 'Result', 'MP', 'FG', 'FGA', '3P', '3PA', 'REB', 'AST', 'STL', 'BLK', 'PTS'])
         # NEXT OPP ABR
-        footer = soup.find('div', id="tfooter_last5")
-        next = footer.find_all("a")
-        team = next[0].get_text()
-        return {"img": pic[0]["src"], "season_stats": season_stats, "last5": df1, "next_team_abr": team}
+        # footer = soup.find('div', id="tfooter_last5")
+        # next = footer.find_all("a")
+
+        # team = next[0].get_text()
+        # "next_team_abr": team
+        return {"img": pic[0]["src"], "season_stats": season_stats, "last5": df1}
 
 def GetTeamPlayers(team):
     # phx to pho
