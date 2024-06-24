@@ -44,6 +44,16 @@ def GetStats(first_name, last_name):
     
     return season_stats
 
+def GetAllTeams():
+    response = requests.get("https://www.nba.com/teams")
+    soup = BeautifulSoup(response.content,  'html.parser')
+    teams = soup.find_all("div", {"class": "TeamFigure_tf__jA5HW"})
+    cleaned_teams = []
+    for team in teams:
+        new_team = {"name": team.find(['a']).text.strip(), "img": team.find(['img'])["src"]}
+        cleaned_teams.append(new_team)
+    return cleaned_teams
+
 def GetMvpList():
     rows = GetTable('https://www.basketball-reference.com/friv/mvp.html', "players")
     top5 = rows[:5]
@@ -121,20 +131,7 @@ def GetSeasonStats(first_name, last_name):
         return {"img": pic[0]["src"], "season_stats": season_stats, "last5": df1}
 
 def GetTeamPlayers(team):
-    # phx to pho
-    team_name = ''
-    if team == "PHX":
-        team_name = "PHO"
-    elif team == "BKN":
-        team_name = "BRK"
-    elif team == "CHA":
-        team_name = "CHO"
-    else:
-        team_name = team
-
-    # bkn to brk
-    # cha to CHO
-    rows = GetTable(f'https://www.basketball-reference.com/teams/{team_name}/2024.html', "per_game")
+    rows = GetTable(f'https://www.basketball-reference.com/teams/{team}/2024.html', "per_game")
     top8 = rows[:9]
     new_rows = []
     for row in top8:
@@ -142,7 +139,7 @@ def GetTeamPlayers(team):
         cols = [ele.text.strip() for ele in cols]
         new_rows.append([cols[1], cols[6], cols[7], cols[9], cols[10], cols[21], cols[22], cols[23], cols[24], cols[27]])
     df1 = pd.DataFrame(new_rows, columns=['Player','FG', 'FGA', '3P', '3PA', 'REB', 'AST', 'STL', 'BLK', 'PTS'])
-    return {"roster": df1, "team_name": team_abbreviations[team_name]}
+    return {"roster": df1}
 
 def GetNextOpponent(first_name, last_name, team):
     team_name = team_abbreviations[team]
