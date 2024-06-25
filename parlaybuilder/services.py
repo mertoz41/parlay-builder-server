@@ -94,6 +94,10 @@ def GetSeasonStats(first_name, last_name):
         index = "2"
     elif full_name == "anthony davis":
         index = "2"
+    elif full_name == "tobias harris":
+        index = "2"
+    elif full_name == "keegan murray":
+        index = "2"
     else:
         index = "1"
         
@@ -142,12 +146,15 @@ def GetTeamPlayers(team):
     return {"roster": df1}
 
 def GetNextOpponent(first_name, last_name, team):
-    team_name = team_abbreviations[team]
-    stat_response = requests.get(f'https://www.statmuse.com/nba/ask?q={first_name}+{last_name}+last+5+games+vs+{team_name}')
+    # team_name = team_abbreviations[team]
+    stat_response = requests.get(f'https://www.statmuse.com/nba/ask?q={first_name}+{last_name}+last+5+games+vs+{team}')
     soupy = BeautifulSoup(stat_response.content, 'html.parser')
     opp_table = soupy.find("table")
     opp_rows = opp_table.find_all("tr")
     opp_rows.pop(0)
+    opp_rows.pop(5)
+
+
     nu_row = []
 
     for row in opp_rows:
@@ -156,4 +163,4 @@ def GetNextOpponent(first_name, last_name, team):
         nu_row.append([cols[2],cols[5],cols[6],cols[7],cols[8],cols[9],cols[10],cols[11],cols[13], cols[14], cols[16], cols[17]])
     nu_row.reverse()
     df2 = pd.DataFrame(nu_row, columns=['Date', 'Opp', 'MP', 'PTS', 'REB', 'AST','STL', 'BLK', 'FG', 'FGA', '3P', '3PA'])
-    return {"last5opp": df2, "next_opponent": [team, team_name]}
+    return df2

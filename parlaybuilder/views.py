@@ -2,7 +2,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from rest_framework.parsers import JSONParser
-from .services import GetStats, GetAllTeams, GetMvpList, GetTeamPlayers
+from .services import GetStats, GetAllTeams, GetMvpList, GetTeamPlayers, GetNextOpponent
 
 @api_view(['GET', 'POST'])
 def index(request):
@@ -27,6 +27,12 @@ def index(request):
 def get_team(request, team):
     players = GetTeamPlayers(team)
     return Response({"roster": players["roster"]})
+
+@api_view(['POST'])
+def get_opponent_stats(request):
+    parsed = JSONParser().parse(request)
+    opponent_stats = GetNextOpponent(parsed["first"], parsed["last"], parsed["team"])
+    return Response({"opp_stats": opponent_stats})
 
 # def search_player(request):
 #     parsed = JSONParser().parse(request)
