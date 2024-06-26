@@ -98,6 +98,8 @@ def GetSeasonStats(first_name, last_name):
         index = "2"
     elif full_name == "keegan murray":
         index = "2"
+    elif full_name == 'jalen williams':
+        index = "6"
     else:
         index = "1"
         
@@ -124,8 +126,8 @@ def GetSeasonStats(first_name, last_name):
         for row in rows:
             cols = row.find_all(['td', 'th'])
             cols = [ele.text.strip() for ele in cols]
-            nu_row.append([cols[0],cols[3],cols[4],cols[6],cols[7],cols[8],cols[10],cols[11],cols[18], cols[19], cols[20], cols[21], cols[24]])
-        df1 = pd.DataFrame(nu_row, columns=['Date', 'Opp', 'Result', 'MP', 'FG', 'FGA', '3P', '3PA', 'REB', 'AST', 'STL', 'BLK', 'PTS'])
+            nu_row.append([cols[0],cols[3],cols[6],cols[7],cols[8],cols[10],cols[11],cols[18], cols[19], cols[20], cols[21], cols[24]])
+        df1 = pd.DataFrame(nu_row, columns=['Date', 'Opp', 'MP', 'FG', 'FGA', '3P', '3PA', 'REB', 'AST', 'STL', 'BLK', 'PTS'])
         # NEXT OPP ABR
         # footer = soup.find('div', id="tfooter_last5")
         # next = footer.find_all("a")
@@ -152,15 +154,14 @@ def GetNextOpponent(first_name, last_name, team):
     opp_table = soupy.find("table")
     opp_rows = opp_table.find_all("tr")
     opp_rows.pop(0)
-    opp_rows.pop(5)
-
-
     nu_row = []
 
     for row in opp_rows:
         cols = row.find_all(['td', 'th'])
         cols = [ele.text.strip() for ele in cols]
-        nu_row.append([cols[2],cols[5],cols[6],cols[7],cols[8],cols[9],cols[10],cols[11],cols[13], cols[14], cols[16], cols[17]])
+        nu_row.append([cols[3],cols[6],cols[7],cols[8],cols[9],cols[10],cols[11],cols[12],cols[13], cols[14], cols[16], cols[17]])
     nu_row.reverse()
+    nu_row.pop(0)
+    nu_row.pop(0)
     df2 = pd.DataFrame(nu_row, columns=['Date', 'Opp', 'MP', 'PTS', 'REB', 'AST','STL', 'BLK', 'FG', 'FGA', '3P', '3PA'])
     return df2
