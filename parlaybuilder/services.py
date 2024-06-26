@@ -126,7 +126,9 @@ def GetSeasonStats(first_name, last_name):
         for row in rows:
             cols = row.find_all(['td', 'th'])
             cols = [ele.text.strip() for ele in cols]
-            nu_row.append([cols[0],cols[3],cols[6],cols[7],cols[8],cols[10],cols[11],cols[18], cols[19], cols[20], cols[21], cols[24]])
+            date_sr = pd.to_datetime(pd.Series(cols[0]))
+            updated_date = date_sr.dt.strftime('%d/%m/%Y')
+            nu_row.append([updated_date[0],cols[3],cols[6],cols[7],cols[8],cols[10],cols[11],cols[18], cols[19], cols[20], cols[21], cols[24]])
         df1 = pd.DataFrame(nu_row, columns=['Date', 'Opp', 'MP', 'FG', 'FGA', '3P', '3PA', 'REB', 'AST', 'STL', 'BLK', 'PTS'])
         # NEXT OPP ABR
         # footer = soup.find('div', id="tfooter_last5")
