@@ -53,7 +53,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = ["http://localhost:3000", "https://silver-pika-ad269b.netlify.app"]
+CORS_ALLOWED_ORIGINS = ["http://localhost:3000", "https://master--silver-pika-ad269b.netlify.app"]
 
 ROOT_URLCONF = 'server.urls'
 
