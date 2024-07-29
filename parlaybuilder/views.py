@@ -6,9 +6,9 @@ from .services import GetStats, GetAllTeams, GetMvpList, GetTeamPlayers, GetNext
 @api_view(['GET', 'POST'])
 def index(request):
     if request.method == "GET":
-        all_teams = GetAllTeams()
+        # all_teams = GetAllTeams()
         mvp_list = GetMvpList()
-        return Response({"all_teams": all_teams, "mvp_list": mvp_list})
+        return Response({ "mvp_list": mvp_list})
     else:
         parsed = JSONParser().parse(request)
         splitted_full_name = parsed["player"].split()
@@ -18,7 +18,10 @@ def index(request):
         last_name = splitted_full_name[1]
         response = GetStats(first_name, last_name) 
         return Response(response)
-
+@api_view(['GET'])
+def get_all_teams(request):
+    all_teams = GetAllTeams()
+    return Response({"teams": all_teams})
 
 @api_view(['GET'])
 def get_team(request, team):
