@@ -49,12 +49,12 @@ def GetSeasonStats(first_name, last_name):
     if all_stats == None:
         return {"error": "Player not found."}
     separate = all_stats.find_all("p")
-    if not separate[2].getText():
+    if not separate[3].getText():
         return {"error": "Player not in the league."}
     else:
-        points_this_season = separate[2].get_text()
-        rebounds_this_season = separate[4].get_text()
-        assists_this_season = separate[6].get_text()
+        points_this_season = separate[3].get_text()
+        rebounds_this_season = separate[5].get_text()
+        assists_this_season = separate[7].get_text()
         picdiv = soup.find(class_="media-item")
         pic = picdiv.find_all("img")
         season_stats = {"pts": points_this_season, "assist": assists_this_season, "reb": rebounds_this_season}
@@ -69,6 +69,7 @@ def GetTeamPlayers(team):
 
 def GetNextOpponent(first_name, last_name, team):
     stats = StatMuseData(f'https://www.statmuse.com/nba/ask?q={first_name}+{last_name}+last+5+games+vs+{team}')
+    print(stats)
     return stats
 
 def StatMuseData(url):
