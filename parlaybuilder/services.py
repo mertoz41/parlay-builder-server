@@ -69,7 +69,6 @@ def GetTeamPlayers(team):
 
 def GetNextOpponent(first_name, last_name, team):
     stats = StatMuseData(f'https://www.statmuse.com/nba/ask?q={first_name}+{last_name}+last+5+games+vs+{team}')
-    print(stats)
     return stats
 
 def StatMuseData(url):
