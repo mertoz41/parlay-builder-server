@@ -1,14 +1,15 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.parsers import JSONParser
-from .services import GetStats, GetAllTeams, GetMvpList, GetTeamPlayers, GetNextOpponent
+from .services import GetStats, GetAllTeams, GetMvpList, GetTeamPlayers, GetNextOpponent, GetTodaysGames
 
 @api_view(['GET', 'POST'])
 def index(request):
     if request.method == "GET":
-        # all_teams = GetAllTeams()
+        all_teams = GetAllTeams()
         mvp_list = GetMvpList()
-        return Response({ "mvp_list": mvp_list})
+        todays_games = GetTodaysGames()
+        return Response({ "mvp_list": mvp_list, "all_teams": all_teams, "todays_games": todays_games})
     else:
         parsed = JSONParser().parse(request)
         splitted_full_name = parsed["player"].split()
@@ -27,6 +28,11 @@ def get_all_teams(request):
 def get_team(request, team):
     players = GetTeamPlayers(team)
     return Response({"roster": players["roster"]})
+
+@api_view(['GET'])
+def get_mvp_list(request):
+    mvp_list = GetMvpList()
+    return Response({ "mvp_list": mvp_list})
 
 @api_view(['POST'])
 def get_opponent_stats(request):

@@ -26,9 +26,25 @@ def GetMvpList():
     return df
 
 
-# def GetTodaysGames():
-#     will be revisited once season starts
-#     'https://www.foxsports.com/nba/schedule'
+def GetTodaysGames():
+    response = requests.get('https://www.foxsports.com/nba/schedule')
+    soup = BeautifulSoup(response.content, 'html.parser')
+    target_divs = soup.find_all('div', class_="table-segment")
+    todays_games = target_divs[0]
+    rows = todays_games.find_all("tr")
+    rows.pop(0)
+    nu_row = []
+    for row in rows: 
+        cols = row.find_all(['td', 'th'])
+        imgs = [ele.img for ele in cols]
+        cols = [ele.text.strip() for ele in cols]
+        nu_row.append([cols[0], imgs[0]['src'], cols[2], imgs[2]['src'], cols[3]])
+
+    return nu_row
+    # df = pd.DataFrame(nu_row, columns=['away_team', 'away_pic', 'home_team', 'home_pic', 'result'])
+    # json_data = df.to_json(orient="records")
+    # print(json_data[0])
+    # return json_data
 
     
     
@@ -61,7 +77,7 @@ def GetSeasonStats(first_name, last_name):
         return {"img": pic[0]["src"], "season_stats": season_stats}
 
 def GetTeamPlayers(team):
-    dfs = pd.read_html(f'https://www.basketball-reference.com/teams/{team}/2024.html')
+    dfs = pd.read_html(f'https://www.basketball-reference.com/teams/{team}/2025.html')
     df = dfs[1][0:9]
     df = df[["Player", "FG", "FGA", "3P", "3PA", "TRB", "AST", "STL", "BLK", "PTS"]]
     df.rename(columns={'FG': "FGM", "3P": "3PM", "TRB": "REB"}, inplace=True)
