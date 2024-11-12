@@ -41,10 +41,6 @@ def GetTodaysGames():
         nu_row.append([cols[0], imgs[0]['src'], cols[2], imgs[2]['src'], cols[3]])
 
     return nu_row
-    # df = pd.DataFrame(nu_row, columns=['away_team', 'away_pic', 'home_team', 'home_pic', 'result'])
-    # json_data = df.to_json(orient="records")
-    # print(json_data[0])
-    # return json_data
 
     
     
