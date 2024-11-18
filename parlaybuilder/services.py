@@ -73,7 +73,15 @@ def GetSeasonStats(first_name, last_name):
         return {"img": pic[0]["src"], "season_stats": season_stats}
 
 def GetTeamPlayers(team):
-    dfs = pd.read_html(f'https://www.basketball-reference.com/teams/{team}/2025.html')
+    
+    fixed_teams = {"BKN": "BRK", "CHA": "CHO", "PHX": "PHO"}
+    searched_team =''
+    if team in fixed_teams: 
+        searched_team = fixed_teams[team]
+    else :
+        searched_team = team
+
+    dfs = pd.read_html(f'https://www.basketball-reference.com/teams/{searched_team}/2025.html')
     df = dfs[1][0:9]
     df = df[["Player", "FG", "FGA", "3P", "3PA", "TRB", "AST", "STL", "BLK", "PTS"]]
     df.rename(columns={'FG': "FGM", "3P": "3PM", "TRB": "REB"}, inplace=True)
@@ -89,12 +97,13 @@ def StatMuseData(url):
     df = df.drop(df.columns[[0,1,5]], axis=1)
     df = df[["DATE", "OPP", "MIN", "FGM", "FGA", "3PM", "3PA", "STL", "BLK", "AST", "PTS", "REB"]]
     df.rename(columns={'DATE': "Date"}, inplace=True)
-
     types = {}
     for col in df.columns:
+        print(col)
         if df[col].dtype == "float64":
             types[col] = "int"
         else:
             types[col] = df[col].dtype
+
     df = df.astype(types)
     return df
